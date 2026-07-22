@@ -114,13 +114,13 @@ def ask(prompt, console):
     return None
 
 
-if __name__ == "__main__":
+def main():
     console = Console()
     if not API_KEY:
         console.print("[red]Please set the GEMINI_API_KEY environment variable.[/red]")
         sys.exit(1)
     if len(sys.argv) < 2:
-        console.print("Usage: python main.py <your prompt here>")
+        console.print("Usage: friday <your prompt here>")
         sys.exit(1)
 
     prompt_text = " ".join(sys.argv[1:])
@@ -128,3 +128,7 @@ if __name__ == "__main__":
     if not answer:
         console.print("[red]Could not retrieve a valid answer.[/red]")
         sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

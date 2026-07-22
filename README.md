@@ -1,5 +1,10 @@
 # Friday - Gemini API Client
 
+Have you ever been on a terminal and wanted to ask a quick question to your AI?
+Are you bothered to open a client? Friday lets you run a quick script that speeds
+up the process of asking simple questions to an AI. Simple questions - direct
+answers.
+
 A simple Python CLI tool to interact with Google's Gemini API and generate text
 content from user prompts. Answers stream to your terminal as Markdown, tuned to
 behave as a concise assistant for sysadmin/DevOps work.
@@ -45,12 +50,41 @@ behave as a concise assistant for sysadmin/DevOps work.
    # edit .env and set GEMINI_API_KEY
    ```
 
-## Usage
+## Install as a command
 
-Run the script with your prompt as command line arguments:
+Install Friday as a `friday` command using `uv`. It lives in an isolated
+environment under `~/.local/` (nothing system-wide, nothing to `sudo`):
 
 ```bash
-uv run main.py "How do I tail the last 100 lines of a log and follow it?"
+uv tool install .
+# make sure ~/.local/bin is on your PATH (uv can wire this up):
+uv tool update-shell
+```
+
+Then, from anywhere:
+
+```bash
+friday "How do I tail the last 100 lines of a log and follow it?"
+```
+
+Manage the install:
+
+```bash
+uv tool install . --reinstall   # upgrade after pulling changes
+uv tool uninstall friday        # remove it
+```
+
+> The installed command reads its config from **environment variables** — export
+> `GEMINI_API_KEY` (and any overrides) in your `~/.bashrc` / `~/.zshrc`. The
+> project-local `.env` / `env.dist` flow only applies when running from the repo
+> with `uv run` (see below).
+
+## Usage (from the repo)
+
+Run it directly with `uv` without installing:
+
+```bash
+uv run friday "How do I tail the last 100 lines of a log and follow it?"
 ```
 
 The answer streams into your terminal, formatted as Markdown.
@@ -58,7 +92,7 @@ The answer streams into your terminal, formatted as Markdown.
 For a harder question, bump the model and thinking level for a single run:
 
 ```bash
-GEMINI_MODEL=gemini-3-flash-preview GEMINI_THINKING=high uv run main.py "..."
+GEMINI_MODEL=gemini-3-flash-preview GEMINI_THINKING=high uv run friday "..."
 ```
 
 ## Configuration
@@ -95,10 +129,14 @@ shown in `env.dist`.
 
 ## Alias (Optional)
 
+> If you ran `uv tool install .` above you already have a `friday` command on your
+> PATH and don't need this. The alias is only useful if you prefer running
+> straight from the repo without installing.
+
 For convenience, you can create a shell alias to run the script easily from anywhere:
 
 ```bash
-alias friday='uv --directory <repo_full_path>/friday run main.py '
+alias friday='uv --directory <repo_full_path>/friday run friday '
 ```
 
 Add this line to your `~/.bashrc` or `~/.zshrc` to make the alias persistent.
