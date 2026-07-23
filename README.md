@@ -18,8 +18,7 @@ behave as a concise assistant for sysadmin/DevOps work.
 - **Configurable thinking** — `off` (fastest, ~15x), `low`, or `high`.
 - **Sysadmin-tuned system prompt** — command(s) first, short explanation only if
   needed.
-- **Env-based config** — everything configurable via environment variables or a
-  `.env` file.
+- **Env-based config** — everything configurable via environment variables.
 
 ## Prerequisites
 
@@ -40,14 +39,10 @@ behave as a concise assistant for sysadmin/DevOps work.
    uv sync
    ```
 
-3. Configure your API key. Either set it in the environment:
+3. Configure your API key by exporting it in your shell profile
+   (`~/.bashrc` / `~/.zshrc`) so it's available everywhere:
    ```bash
    export GEMINI_API_KEY="your-api-key-here"
-   ```
-   or copy the sample config and fill it in:
-   ```bash
-   cp env.dist .env
-   # edit .env and set GEMINI_API_KEY
    ```
 
 ## Install as a command
@@ -74,10 +69,9 @@ uv tool install . --reinstall   # upgrade after pulling changes
 uv tool uninstall friday        # remove it
 ```
 
-> The installed command reads its config from **environment variables** — export
-> `GEMINI_API_KEY` (and any overrides) in your `~/.bashrc` / `~/.zshrc`. The
-> project-local `.env` / `env.dist` flow only applies when running from the repo
-> with `uv run` (see below).
+> Friday reads its config from **environment variables**. Export
+> `GEMINI_API_KEY` (and any overrides) in your `~/.bashrc` / `~/.zshrc` so the
+> installed command picks them up everywhere.
 
 ## Usage (from the repo)
 
@@ -95,10 +89,20 @@ For a harder question, bump the model and thinking level for a single run:
 GEMINI_MODEL=gemini-3-flash-preview GEMINI_THINKING=high uv run friday "..."
 ```
 
+### Local development
+
+For local development you can keep config in a `.env` file instead of exporting
+it globally. Friday does not load `.env` itself, so pass it via `uv run`:
+
+```bash
+cp env.dist .env          # then edit .env and set GEMINI_API_KEY
+uv run --env-file .env friday "..."
+```
+
 ## Configuration
 
-All settings are read from environment variables (or a `.env` file). Defaults are
-shown in `env.dist`.
+All settings are read from environment variables. Defaults are shown in
+`env.dist`, which you can copy to a `.env` for local development (see above).
 
 | Variable                 | Default                  | Description                                             |
 | ------------------------ | ------------------------ | ------------------------------------------------------- |
@@ -126,20 +130,6 @@ shown in `env.dist`.
 
 - requests: For making HTTP requests
 - rich: For terminal formatting, live streaming, and Markdown rendering
-
-## Alias (Optional)
-
-> If you ran `uv tool install .` above you already have a `friday` command on your
-> PATH and don't need this. The alias is only useful if you prefer running
-> straight from the repo without installing.
-
-For convenience, you can create a shell alias to run the script easily from anywhere:
-
-```bash
-alias friday='uv --directory <repo_full_path>/friday run friday '
-```
-
-Add this line to your `~/.bashrc` or `~/.zshrc` to make the alias persistent.
 
 ## License
 
